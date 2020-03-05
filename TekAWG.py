@@ -290,16 +290,25 @@ class Driver(BaseDriver):
             self.write('SLIS:SEQ:STEP%d:EJIN "%s", %s' % (step, name, jump[0]))
             self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (step, name, jump[1]))
 
-    def set_seq(self,wave_name,step,track,seq_name=None,tag=None,wait='ATR',goto='NEXT',repeat='INFinite',jump0='ATRigger',jump1='NEXT'):
+    def set_seq(self,wave_name,
+                step,
+                track,
+                seq_name=None,
+                tag=None,
+                wait='ATR',
+                goto='NEXT',
+                repeat='INFinite',
+                eventinput='ATRigger',
+                eventjump='NEXT'):
         """set a step of sequence
         seq_name: sequence name
         wave_name: subsequence name or list of waveforms for every tracks
         wait: ATRigger | BTRigger | ITRigger | OFF
         goto: <NR1> | LAST | FIRSt | NEXT | END
         repeat: ONCE | INFinite | <NR1>
-        jump0: 
+        eventinput: 
             jump_input: ATRigger | BTRigger | OFF | ITRigger
-        jump1:
+        eventjump:
             jump_to: <NR1> | NEXT | FIRSt | LAST | END
         """
         if tag == 'subseq':
@@ -308,23 +317,23 @@ class Driver(BaseDriver):
             for i, wav in enumerate(wave_name,start=2):
                 step = i
                 if i == 2:
-                    self.write('SLIS:SEQ:STEP%d:TASS%d:WAV "%s","%s"' %(step, track, seq_name, wave_name))
-                    self.write('SLIS:SEQ:STEP%d:WINP "%s", %s' % (1, seq_name, wait))
+                    self.write('SLIS:SEQ:STEP%d:TASS%d:WAV "%s","%s"' %(1, track, seq_name, wav))
+                    self.write('SLIS:SEQ:STEP%d:WINP "%s", %s' % (1, seq_name, 'BTR'))
                     self.write('SLIS:SEQ:STEP%d:GOTO "%s", %s' % (1, seq_name, goto))
                     self.write('SLIS:SEQ:STEP%d:RCO "%s", %s' % (1, seq_name, repeat))
-                    self.write('SLIS:SEQ:STEP%d:EJIN "%s", %s' % (1, seq_name, jump0))
-                    self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (1, seq_name, jump1))
+                    self.write('SLIS:SEQ:STEP%d:EJIN "%s", %s' % (1, seq_name, eventinput))
+                    self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (1, seq_name, eventjump))
                 
-                self.write('SLIS:SEQ:STEP%d:TASS%d:WAV "%s","%s"' %(step, track, seq_name, wave_name))
+                self.write('SLIS:SEQ:STEP%d:TASS%d:WAV "%s","%s"' %(step, track, seq_name, wav))
                 self.write('SLIS:SEQ:STEP%d:WINP "%s", %s' % (step, seq_name, wait))
                 self.write('SLIS:SEQ:STEP%d:GOTO "%s", %s' % (step, seq_name, goto))
                 self.write('SLIS:SEQ:STEP%d:RCO "%s", %s' % (step, seq_name, repeat))
-                self.write('SLIS:SEQ:STEP%d:EJIN "%s", %s' % (step, seq_name, jump0))
-                self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (step, seq_name, jump1))
+                self.write('SLIS:SEQ:STEP%d:EJIN "%s", %s' % (step, seq_name, eventinput))
+                self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (step, seq_name, eventjump))
 
                 if i == len(wave_name)+1:
                     self.write('SLIS:SEQ:STEP%d:RCO "%s", %s' % (step, seq_name, 20))
-                    self.write('SLIS:SEQ:STEP%d:EJUM "%s", %s' % (step, seq_name, 'FIRST'))
+                    self.write('SLIS:SEQ:STEP%d:GOTO "%s", %s' % (step, seq_name, 'FIRST'))
 
     def use_sequence(self, name, channels=[1, 2]):
         for i, ch in enumerate(channels):
