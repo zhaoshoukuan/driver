@@ -15,10 +15,11 @@ class Driver():
         self._parity = parity
         self._bytesize = bytesize
         self._stopbits = stopbits
+        print(addr)
 
 
     def performOpen(self):
-        
+
         self.handle=serial.Serial(self.addr,baudrate=self._baudrate,parity=self._parity,bytesize=self._bytesize,\
             stopbits=self._stopbits,timeout=self.timeout)
         if self.handle.isOpen():    # make sure port is open     
