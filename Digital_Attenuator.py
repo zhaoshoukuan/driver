@@ -15,7 +15,6 @@ class Driver():
         self._parity = parity
         self._bytesize = bytesize
         self._stopbits = stopbits
-        print(addr)
 
 
     def performOpen(self):
