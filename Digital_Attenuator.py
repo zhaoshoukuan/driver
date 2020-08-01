@@ -18,7 +18,7 @@ class Driver():
 
 
     def performOpen(self):
-
+        
         self.handle=serial.Serial(self.addr,baudrate=self._baudrate,parity=self._parity,bytesize=self._bytesize,\
             stopbits=self._stopbits,timeout=self.timeout)
         if self.handle.isOpen():    # make sure port is open     
@@ -47,3 +47,7 @@ class Driver():
             self.handle.close()
         except:
             pass
+
+
+    def clear_err(self):
+        self.handle.write('*CLS')
